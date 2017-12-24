@@ -14,7 +14,8 @@
   },
   "autoload": {
     "psr-4": {
-      "IranPayment\\Zarinpal\\": "zarinpal"
+      "IranPayment\\Zarinpal\\": "zarinpal",
+      "IranPayment\\Arianpal\\": "arianpal"
     }
   }
 }
