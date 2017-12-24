@@ -1,0 +1,19 @@
+{
+  "name": "matiniamirhossein/zarinpal",
+  "description": "Easy to use Zarinpal client.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Amirhossein Matini",
+      "email": "matiniamirhossein@gmail.com"
+    }
+  ],
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Zarinpal\\": "zarinpal"
+    }
+  }
+}
