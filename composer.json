@@ -1,5 +1,5 @@
 {
-  "name": "matiniamirhossein/php-iranpayment",
+  "name": "x/php-iranpayment",
   "description": "Easy to use Zarinpal/Arianpal client.",
   "minimum-stability": "stable",
   "license": "MIT",
