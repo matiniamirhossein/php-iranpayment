@@ -1,5 +1,5 @@
 <?php
-namespace Zarinpal;
+namespace IranPayment\Zarinpal;
 class Zarinpal
 {
     private $zarinpal_gateway = 'https://de.zarinpal.com/pg/services/WebGate/wsdl';

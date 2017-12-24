@@ -1,5 +1,5 @@
 <?php
-namespace Zarinpal;
+namespace IranPayment\Zarinpal;
 class ZarinpalResponse
 {
     private $success;
