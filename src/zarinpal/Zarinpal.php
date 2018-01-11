@@ -2,6 +2,7 @@
 
 namespace IranPayment\Zarinpal;
 
+use IranPayment\Client;
 use IranPayment\Zarinpal\Types\Authority;
 
 class Zarinpal
@@ -19,19 +20,24 @@ class Zarinpal
         self::USSD_GATE => '*770*97*2*%s#',
     ];
     private $merchantID;
-    /** @var \SoapClient */
     private $client;
 
 
     public function __construct($merchantID)
     {
         $this->merchantID = $merchantID;
-        $this->client = new \SoapClient($this->zarinpal_gateway, ['encoding' => 'UTF-8']);
+        $this->client = new Client($this->zarinpal_gateway);
     }
 
+    /**
+     * @param ZarinpalRequest $request
+     * @param int $type
+     * @return string
+     * @throws ZarinpalException
+     */
     public function requestForPayment(ZarinpalRequest $request, $type = self::WEB_GATE)
     {
-        $result = $this->client->PaymentRequest([
+        $result = $this->client->call('PaymentRequest', [
             'MerchantID' => $this->merchantID,
             'Amount' => $request->getAmount(),
             'Description' => $request->getDescription(),
@@ -45,9 +51,10 @@ class Zarinpal
         throw new ZarinpalException("An error occurred in payment gateway. status: $result->Status");
     }
 
+
     public function verifyPayment($Authority, $Amount)
     {
-        $result = $this->client->PaymentVerification([
+        $result = $this->client->call('PaymentVerification', [
             'MerchantID' => $this->merchantID,
             'Authority' => $Authority,
             'Amount' => $Amount,
@@ -55,32 +62,44 @@ class Zarinpal
         return new ZarinpalResponse($result);
     }
 
+    /**
+     * @return array
+     * @throws ZarinpalException
+     */
+
     public function getUnverifiedTransactions()
     {
-        $result = $this->client->GetUnverifiedTransactions([
+        $result = $this->client->call('GetUnverifiedTransactions', [
             'MerchantID' => $this->merchantID,
         ]);
-        if ($result->status != 100) {
+        if ($result->Status != 100) {
             throw new ZarinpalException("An error occurred in getUnverifiedTransactions. status: $result->Status");
         }
         $Authorities = [];
-        foreach (json_encode($result->Authorities, true) as $authority) {
+        foreach (json_decode($result->Authorities, true) as $authority) {
             $Authorities[] = new Authority($authority);
         }
-        return ['status' => $result->status, 'Authorities' => $Authorities];
+        return ['Status' => $result->Status, 'Authorities' => $Authorities];
     }
+
+    /**
+     * @param $authority
+     * @param $expireIn
+     * @return mixed
+     * @throws ZarinpalException
+     */
 
     public function refreshAuthority($authority, $expireIn)
     {
-        $result = $this->client->RefreshAuthority([
+        $result = $this->client->call('RefreshAuthority', [
             'MerchantID' => $this->merchantID,
             'Authority' => $authority,
             'ExpireIn' => $expireIn,
         ]);
-        if ($result->status != 100) {
+        if ($result->Status != 100) {
             throw new ZarinpalException("An error occurred in refreshAuthority. status: $result->Status");
         }
-        return $result->status;
+        return $result->Status;
     }
 
 
